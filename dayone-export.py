@@ -2,8 +2,7 @@
 
 import json
 import datetime
-import os
-import calendar
+import subprocess
 
 input_filename = ""
 output_directory = 'out'
@@ -42,5 +41,5 @@ for entry in entries:
     
     file.close()
 
-    epoch_seconds = calendar.timegm(creation_date.timetuple())
-    os.utime(output_path, (epoch_seconds, epoch_seconds))
+    subprocess.run(["touch", "-m", \
+                      creation_date.strftime('-t%Y%m%d%H%M'), output_path])
