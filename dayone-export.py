@@ -2,6 +2,8 @@
 
 import json
 import datetime
+import os
+import calendar
 
 input_filename = ""
 output_directory = 'out'
@@ -24,7 +26,10 @@ for entry in entries:
     creation_date = datetime.datetime.fromisoformat(entry['creationDate'].replace("Z", "+00:00"))
     output_filename = creation_date.strftime('%Y%m%d %H%M.txt')
 
-    file = open(output_directory + '/' + output_filename, mode='w')
+    output_path = output_directory + '/' + output_filename
+
+    file = open(output_path, mode='w')
+
     print(cleanup(entry['text']), file=file)
     print('', file=file)
     print('***', file=file)
@@ -34,3 +39,8 @@ for entry in entries:
     if l is not None:
         l = l['localityName'] + ', ' + l['administrativeArea'] + ', ' + l['country']
         print(l, file=file)
+    
+    file.close()
+
+    epoch_seconds = calendar.timegm(creation_date.timetuple())
+    os.utime(output_path, (epoch_seconds, epoch_seconds))
